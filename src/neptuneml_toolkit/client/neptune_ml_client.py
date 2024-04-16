@@ -368,6 +368,15 @@ class NeptuneMLClient():
                 params['modelType'] = modelType
             if configFileName:
                 params['configFileName'] = configFileName
+            if processingInstanceType:
+                params["processingInstanceType"] = processingInstanceType
+            if processingInstanceVolumeSizeInGB:
+                params[
+                    "processingInstanceVolumeSizeInGB"
+                ] = processingInstanceVolumeSizeInGB
+            if processingTimeOutInSeconds:
+                params["processingTimeOutInSeconds"] = processingTimeOutInSeconds
+
             self._add_security_params(params, sagemakerIamRoleArn, neptuneIamRoleArn, subnets, securityGroupIds,
                                       volumeEncryptionKMSKey, s3OutputEncryptionKMSKey)
 
@@ -1194,3 +1203,4 @@ class NeptuneMLClient():
             raise RuntimeError
 
         return sagemaker_utils.invoke_endpoint(endpoint_name, input_data)
+
