@@ -579,6 +579,28 @@ class NeptuneMLClient():
         model_training_job_response = self.client.modeltraining_start(dataProcessingJobId, trainModelS3Location,
                                                                       maxHPONumberOfTrainingJobs,
                                                                       maxHPOParallelTrainingJobs, **params)
+        # Better error response info than you get from raise_for_status
+        if data_processing_job_response.status_code != 200:
+            try:
+                detailed_message = data_processing_job_response.json()["detailedMessage"]
+            except:
+                detailed_message = data_processing_job_response.text
+
+            try:
+                print(f"Status Code: {data_processing_job_response.status_code}")
+                print(f"Error Response: {detailed_message}")
+                params_string = "\n".join(
+                    f"\t{key}: {value}" for key, value in params.items()
+                )
+                print(
+                    f"Parameters used:\n"
+                    f"\tinputDataS3Location: {inputDataS3Location}\n",
+                    f"\tprocessedDataS3Location: {processedDataS3Location}\n",
+                    f"{params_string}",
+                )
+            except:
+                print(f"Error Response: {data_processing_job_response.text}")
+
         model_training_job_response.raise_for_status()
         model_training_job = model_training_job_response.json()
         if wait:
